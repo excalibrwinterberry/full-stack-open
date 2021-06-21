@@ -1,6 +1,8 @@
-const { response } = require('express')
+const { response, request } = require('express')
 const express = require('express')
 const app = express()
+
+app.use(express.json())
 
 let persons = [
     {
@@ -25,6 +27,13 @@ let persons = [
       }
 ]
 
+const idGenerator = () => {
+    const lowerLimit = persons.length > 0
+      ? Math.max(...persons.map(n => n.id))
+      : 0
+    return Math.floor(Math.random()* 1000)+(lowerLimit+1)
+}
+
 app.get('/', (request, response) => {
     response.send('<h1>PhoneBook</h1>')
 })
@@ -39,6 +48,38 @@ app.get('/api/info', (request, response) => {
     <p>Phonebook has info for ${length} people </p> 
     ${new Date()}
     `)
+})
+
+app.get('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+    const person = persons.find(person => person.id === id)
+
+   if(person){
+       response.json(person)
+   }else{
+        response.status(404).end()
+   }
+})
+
+app.delete('/api/persons/:id', (request, response)=>{
+    const id = Number(request.params.id)
+    persons = persons.filter(person => person.id !== id)
+    console.log('deleted')
+    response.status(204).end()
+})
+
+app.post('/api/persons', (request, response) => {
+    const body = request.body
+
+    const person = {
+        "name": body.name,
+        "phone": body.phone,
+        "id": idGenerator()
+    }
+    persons.concat(person)
+
+    response.json(person)
+
 })
 
 const PORT = 3001
