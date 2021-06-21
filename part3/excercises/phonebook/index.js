@@ -71,6 +71,18 @@ app.delete('/api/persons/:id', (request, response)=>{
 app.post('/api/persons', (request, response) => {
     const body = request.body
 
+    if(!body.name || !body.phone){
+        return response.status(400).json({
+            error: 'name and phone must be added'
+        })
+    }
+
+    const present = persons.some(person => person.name === body.name)
+    if(present){
+        return response.status(400).json({
+            error: 'name must be unique'
+        })
+    }
     const person = {
         "name": body.name,
         "phone": body.phone,
