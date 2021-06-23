@@ -2,7 +2,9 @@ const express = require('express')
 const app = express()
 
 //imports express and assign it to variable app
+const cors = require('cors')
 
+app.use(cors())
 app.use(express.json())
 
 
