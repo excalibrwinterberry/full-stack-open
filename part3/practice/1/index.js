@@ -16,6 +16,7 @@ const requestLogger = (request, response, next) => {
   next()
 }
 app.use(requestLogger)
+app.use(express.static('build'))
 
 let notes = [
     {
@@ -62,7 +63,7 @@ app.get('/api/notes/:id', (request, response) => {
     response.json(note)
   }else{
     response.status(404).end()
-    // to return an 404 when an out of bounds note is requested
+    // to return an 404 when an out of bounds note is requeste
   }
   
 })
